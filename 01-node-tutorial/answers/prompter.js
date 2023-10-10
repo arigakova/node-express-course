@@ -21,19 +21,25 @@ const getBody = (req, callback) => {
 };
 
 // here, you could declare one or more variables to store what comes back from the form.
-let item = "Enter something below.";
+//let item = "Enter something below.";
+const colors = ['white', 'red', 'blue', 'green', 'yellow', 'purple'];
+
+let item = "white";
 
 // here, you can change the form below to modify the input fields and what is displayed.
 // This is just ordinary html with string interpolation.
 const form = () => {
+  const colorOptions = colors.map((color) => `<option value="${color}" ${color === item?"selected":""}>${color}</option>`).join('');
   return `
-  <body>
-  <p>${item}</p>
+  <body style="background-color: ${item}">
   <form method="POST">
-  <input name="item"></input>
-  <button type="submit">Submit</button>
-  </form>
-  </body>
+  <label for="colorSelect">Choose a background color:</label>
+  <select id="colorSelect" name="color">
+    ${colorOptions}
+  </select>
+  <button type="submit">Set Color</button>
+</form>
+</body>
   `;
 };
 
@@ -44,10 +50,10 @@ const server = http.createServer((req, res) => {
     getBody(req, (body) => {
       console.log("The body of the post is ", body);
       // here, you can add your own logic
-      if (body["item"]) {
-        item = body["item"];
+      if (body["color"] && colors.includes(body["color"])) {
+        item = body["color"];
       } else {
-        item = "Nothing was entered.";
+        item = "white"; // Default to white if an invalid color is selected
       }
       // Your code changes would end here
       res.writeHead(303, {
