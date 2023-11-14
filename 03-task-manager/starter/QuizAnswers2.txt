@@ -1,0 +1,11 @@
+const getTask = asyncWrapper(async (req, res, next) => {
+  const { id: taskID } = req.params;
+  const task = await Task.findOne({ _id: taskID });
+
+  if (!task) {
+    const error = new CustomAPIError(`Task with ID ${taskID} not found`, 404);
+    return next(error);
+  }
+
+  res.status(200).json({ task });
+});
